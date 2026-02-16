@@ -1,0 +1,16 @@
+<div id="<%= dom_id blog %>" style="background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+  <h2 style="margin-top: 0; margin-bottom: 10px; font-size: 1.5rem;">
+    <%= link_to blog.title, blog, style: "text-decoration: none; color: #2c3e50;" %>
+  </h2>
+  
+  <div style="color: #4a5568; line-height: 1.6; margin-bottom: 15px;">
+    <%= truncate(blog.body, length: 150) %>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+    <%= link_to "Read more →", blog, style: "color: #007bff; text-decoration: none; font-weight: 500;" %>
+    <span style="color: #6c757d;">
+      <%= blog.published? ? "Published" : "Draft" %>
+    </span>
+  </div>
+</div>

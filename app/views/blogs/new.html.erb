@@ -1,0 +1,11 @@
+<% content_for :title, "New blog" %>
+
+<div style="font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; color: #333;">
+  <h1 style="margin-bottom: 30px; font-size: 2rem; color: #2c3e50;">New blog</h1>
+
+  <%= render "form", blog: @blog %>
+
+  <div style="margin-top: 20px;">
+    <%= link_to "Back to blogs", blogs_path, style: "color: #6c757d; text-decoration: none;" %>
+  </div>
+</div>

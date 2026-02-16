@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  get "comments/create"
+  get "comments/destroy"
+  resources :blogs do
+    resources :comments, only: [ :create, :destroy ]
+    collection do
+      get :unpublished
+    end
+
+
+    member do
+      patch :publish
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
