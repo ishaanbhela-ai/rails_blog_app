@@ -4,10 +4,18 @@ class BlogsController < ApplicationController
   # GET /blogs or /blogs.json
   def index
     @blogs = Blog.published
+    respond_to do |format|
+      format.html
+      format.json { render json: BlogSerializer.render(@blogs) }
+    end
   end
 
   # GET /blogs/1 or /blogs/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: BlogSerializer.render(@blog) }
+    end
   end
 
   # GET /blogs/new
@@ -25,7 +33,8 @@ class BlogsController < ApplicationController
 
     respond_to do |format|
       if @blog.save
-        format.html { redirect_to @blog, notice: "Blog was successfully created." }
+        PublishBlogJob.set(wait: 1.hour).perform_later(@blog.id)
+        format.html { redirect_to @blog, notice: "Blog created. Will publish in 1 hour." }
         format.json { render :show, status: :created, location: @blog }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -59,13 +68,19 @@ class BlogsController < ApplicationController
 
   def publish
     @blog = Blog.find(params[:id])
-    @blog.update(published: true)
-    redirect_to @blog, notice: "Blog published!"
+    if PublishBlogService.new(@blog).call
+      redirect_to @blog, notice: "Blog published!"
+    else
+      redirect_to @blog, alert: "Blog is already published or failed to publish."
+    end
   end
 
   def unpublished
     @blogs = Blog.unpublished
-    render :index
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render json: BlogSerializer.render(@blogs) }
+    end
   end
 
   private

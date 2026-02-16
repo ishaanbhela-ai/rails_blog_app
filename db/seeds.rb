@@ -1,16 +1,19 @@
-10.times do |i|
+Comment.destroy_all
+Blog.destroy_all
+10.times do
   blog = Blog.create!(
-    title: "Published Blog #{i}",
-    body: "Content",
-    published: true
+    title: Faker::Book.title,
+    body: Faker::Lorem.paragraphs(number: 3).join("\n\n"),
+    published: [ true, false ].sample
   )
-  2.times { blog.comments.create!(body: "Comment") }
-end
 
-10.times do |i|
-  Blog.create!(
-    title: "Unpublished Blog #{i}",
-    body: "Draft",
-    published: false
-  )
+  # Only add comments if the blog is published
+  if blog.published?
+    rand(0..5).times do
+      blog.comments.create!(
+        body: Faker::Lorem.sentence
+      )
+    end
+  end
 end
+puts "Created #{Blog.count} blogs and #{Comment.count} comments."
